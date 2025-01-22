@@ -31,7 +31,7 @@ MongoClient.connect(CONNECTION_URL, { useNewUrlParser: true })
 
 app.get('/word', async (req, res) => {
     try {
-        const tests = await db.collection('Data').find({ anagramType: "WORD" }).toArray();
+        const tests = await db.collection('Data').find({ anagramType: "WORD" }).limit(10).toArray();
         res.status(200).json(tests);
     } catch (error) {
         res.status(404).json({ message: error.message });
