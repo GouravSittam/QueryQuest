@@ -1,5 +1,5 @@
 import React from "react"
-import Quiz from "./components/Quiz"
+import Quiz from "./components/WordQuiz/quiz"
 import "./App.css"
 
 function App() {
