@@ -29,6 +29,15 @@ MongoClient.connect(CONNECTION_URL, { useNewUrlParser: true })
     })
     .catch(error => console.error(error));
 
+app.get('/all', async (req, res) => {
+    try {
+        const tests = await db.collection('Data').find({}).limit(10).toArray();
+        res.status(200).json(tests);
+    } catch (error) {
+        res.status(404).json({ message: error.message });
+    }
+});
+
 app.get('/word', async (req, res) => {
     try {
         const tests = await db.collection('Data').find({ anagramType: "WORD" }).limit(10).toArray();
@@ -40,7 +49,7 @@ app.get('/word', async (req, res) => {
 
 app.get('/sentence', async (req, res) => {
     try {
-        const tests = await db.collection('Data').find({ anagramType: "SENTENCE" }).toArray();
+        const tests = await db.collection('Data').find({ anagramType: "SENTENCE" }).limit(10).toArray();
         res.status(200).json(tests);
     } catch (error) {
         res.status(404).json({ message: error.message });
@@ -49,7 +58,7 @@ app.get('/sentence', async (req, res) => {
 
 app.get('/mcq', async (req, res) => {
     try {
-        const tests = await db.collection('Data').find({ type: "MCQ" }).toArray();
+        const tests = await db.collection('Data').find({ type: "MCQ" }).limit(10).toArray();
         res.status(200).json(tests);
     } catch (error) {
         res.status(404).json({ message: error.message });
@@ -58,7 +67,7 @@ app.get('/mcq', async (req, res) => {
 
 app.get('/read', async (req, res) => {
     try {
-        const tests = await db.collection('Data').find({ type: "READ_ALONG" }).toArray();
+        const tests = await db.collection('Data').find({ type: "READ_ALONG" }).limit(10).toArray();
         res.status(200).json(tests);
     } catch (error) {
         res.status(404).json({ message: error.message });

@@ -1,35 +1,20 @@
 import React, { useState, useEffect } from "react"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
-import Question from "./question"
-import { fetchQuizData } from "../../lib/api"
+import Question from "./Question"
+import MCQQuestion from "./MCQQuestion"
 import { ArrowLeft, ArrowRight } from "lucide-react"
 
-function Quiz() {
-  const [quizData, setQuizData] = useState([])
+const McqQuiz = ({ data }) => {
+  const [quizData, setQuizData] = useState(data)
   const [currentQuestion, setCurrentQuestion] = useState(0)
   const [userAnswers, setUserAnswers] = useState([])
   const [showResults, setShowResults] = useState(false)
   const [score, setScore] = useState(0)
-  const [loading, setLoading] = useState(true)
-  const [error, setError] = useState(null)
 
   useEffect(() => {
-    const loadQuizData = async () => {
-      try {
-        const data = await fetchQuizData()
-        setQuizData(data)
-        setUserAnswers(new Array(data.length).fill(""))
-        setLoading(false)
-      } catch (err) {
-        console.error("Error fetching quiz data:", err)
-        setError("Failed to load quiz data. Please try again later.")
-        setLoading(false)
-      }
-    }
-
-    loadQuizData()
-  }, [])
+    setUserAnswers(new Array(data.length).fill(""))
+  }, [data])
 
   const handleAnswer = (answer) => {
     const updatedAnswers = [...userAnswers]
@@ -50,20 +35,16 @@ function Quiz() {
   }
 
   const handleSubmit = () => {
-    const newScore = quizData.reduce(
-      (acc, question, index) => (userAnswers[index] === question.solution ? acc + 1 : acc),
-      0,
-    )
+    const newScore = quizData.reduce((acc, question, index) => {
+      if (question.type === "MCQ") {
+        const correctAnswer = question.options.find((option) => option.isCorrectAnswer)?.text
+        return userAnswers[index] === correctAnswer ? acc + 1 : acc
+      } else {
+        return userAnswers[index] === question.solution ? acc + 1 : acc
+      }
+    }, 0)
     setScore(newScore)
     setShowResults(true)
-  }
-
-  if (loading) {
-    return <div className="flex justify-center items-center h-screen">Loading...</div>
-  }
-
-  if (error) {
-    return <div className="flex justify-center items-center h-screen text-red-500">{error}</div>
   }
 
   if (showResults) {
@@ -86,6 +67,8 @@ function Quiz() {
     )
   }
 
+  const currentQuestionData = quizData[currentQuestion]
+
   return (
     <Card className="w-full max-w-2xl mx-auto">
       <CardHeader>
@@ -102,11 +85,15 @@ function Quiz() {
         </div>
       </CardHeader>
       <CardContent>
-        <Question
-          question={quizData[currentQuestion]}
-          userAnswer={userAnswers[currentQuestion]}
-          onAnswer={handleAnswer}
-        />
+        {currentQuestionData.type === "MCQ" ? (
+          <MCQQuestion
+            question={currentQuestionData}
+            userAnswer={userAnswers[currentQuestion]}
+            onAnswer={handleAnswer}
+          />
+        ) : (
+          <Question question={currentQuestionData} userAnswer={userAnswers[currentQuestion]} onAnswer={handleAnswer} />
+        )}
       </CardContent>
       <CardFooter className="flex justify-between">
         <Button onClick={handlePrevious} disabled={currentQuestion === 0} className="flex items-center">
@@ -126,5 +113,5 @@ function Quiz() {
   )
 }
 
-export default Quiz
+export default McqQuiz
 
