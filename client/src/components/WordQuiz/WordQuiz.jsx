@@ -4,8 +4,9 @@ import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/componen
 import Question from "./Question"
 import { ArrowLeft, ArrowRight } from "lucide-react"
 import Api from "@/lib/Api"
+import useFetchQuestion from "@/lib/useFetchQuestion"
 
-const Quiz=({data})=> {
+const Quiz=({category})=> {
   const [quizData, setQuizData] = useState([])
   const [currentQuestion, setCurrentQuestion] = useState(0)
   const [userAnswers, setUserAnswers] = useState([])
@@ -13,31 +14,17 @@ const Quiz=({data})=> {
   const [score, setScore] = useState(0)
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState(null)
+  console.log("hello inside word")
+  const data = useFetchQuestion(category);
 
   useEffect(() => {
     if (data && data.length > 0) {
+      console.log(data);
       setQuizData(data);
-      setUserAnswers(new Array(data.length).fill("")); // Initialize answers as empty
+      setUserAnswers(new Array(data.length).fill("")); 
       setLoading(false);
     }
   }, [data]);
-
-  // useEffect(() => {
-  //   const loadQuizData = async () => {
-  //     try {
-  //       const data = await Api()
-  //       setQuizData(data)
-  //       setUserAnswers(new Array(data.length).fill(""))
-  //       setLoading(false)
-  //     } catch (err) {
-  //       console.error("Error fetching quiz data:", err)
-  //       setError("Failed to load quiz data. Please try again later.")
-  //       setLoading(false)
-  //     }
-  //   }
-
-  //   loadQuizData()
-  // }, [])
 
   const handleAnswer = (answer) => {
     const updatedAnswers = [...userAnswers]

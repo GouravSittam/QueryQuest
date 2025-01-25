@@ -22,7 +22,7 @@ function Question({ question, onAnswer, userAnswer }) {
         .filter((block) => block.showInOption)
         .map((block, index) => ({
           ...block,
-          id: `block-${index}`, // Ensure unique IDs
+          id: `block-${index}`, 
         })),
     )
     setBlocks(shuffledBlocks)

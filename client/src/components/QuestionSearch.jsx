@@ -136,8 +136,9 @@ import React, { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardHeader, CardTitle } from "@/components/ui/card";
 import Api from "@/lib/Api";
+import SearchBar from "./SearchBar";
 
-const categories = ["word", "mcq", "read", "sentence"];
+const categories = ["word",  "read", "sentence","mcq"];
 
 export default function QuestionSearch() {
   const [selectedCategory, setSelectedCategory] = useState("word"); // Default to "word"
@@ -164,6 +165,7 @@ export default function QuestionSearch() {
     <Card className="w-full max-w-2xl mx-auto">
       <CardHeader>
         <CardTitle className="text-2xl font-bold text-primary mb-4">Question Search</CardTitle>
+        <SearchBar />
         <div className="flex flex-wrap gap-2 mt-2">
           {/* <Button
             variant={selectedCategory === "all" ? "default" : "outline"}

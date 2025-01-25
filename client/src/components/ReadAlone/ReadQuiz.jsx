@@ -4,8 +4,9 @@ import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/componen
 import Question from "./Question"
 import ReadAlongQuestion from "./ReadAlongQuestion"
 import { ArrowLeft, ArrowRight } from "lucide-react"
+import useFetchQuestion from "@/lib/useFetchQuestion"
 
-const ReadQuiz = ({ data }) => {
+const ReadQuiz = ({ category }) => {
   const [quizData, setQuizData] = useState([])
   const [currentQuestion, setCurrentQuestion] = useState(0)
   const [userAnswers, setUserAnswers] = useState([])
@@ -13,6 +14,8 @@ const ReadQuiz = ({ data }) => {
   const [score, setScore] = useState(0)
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState(null)
+
+  const data = useFetchQuestion(category);
 
   useEffect(() => {
     if (data && data.length > 0) {

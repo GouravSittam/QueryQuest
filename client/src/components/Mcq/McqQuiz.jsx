@@ -1,57 +1,83 @@
-import React, { useState, useEffect } from "react"
-import { Button } from "@/components/ui/button"
-import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
-import Question from "./Question"
-import MCQQuestion from "./MCQQuestion"
-import { ArrowLeft, ArrowRight } from "lucide-react"
+import React, { useState, useEffect } from "react";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
+import Question from "./Question";
+import MCQQuestion from "./MCQQuestion";
+import { ArrowLeft, ArrowRight } from "lucide-react";
+import useFetchQuestion from "@/lib/useFetchQuestion";
 
-const McqQuiz = ({ data }) => {
-  const [quizData, setQuizData] = useState(data)
-  const [currentQuestion, setCurrentQuestion] = useState(0)
-  const [userAnswers, setUserAnswers] = useState([])
-  const [showResults, setShowResults] = useState(false)
-  const [score, setScore] = useState(0)
+const McqQuiz = ({ category }) => {
+  const [quizData, setQuizData] = useState([]);
+  const [currentQuestion, setCurrentQuestion] = useState(0);
+  const [userAnswers, setUserAnswers] = useState([]);
+  const [showResults, setShowResults] = useState(false);
+  const [score, setScore] = useState(0);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+  const data = useFetchQuestion(category);
 
   useEffect(() => {
-    setUserAnswers(new Array(data.length).fill(""))
-  }, [data])
+    const loadQuizData = async () => {
+      try {
+        if (data && data.length > 0) {
+          setQuizData(data);
+          setUserAnswers(new Array(data.length).fill("")); // Initialize answers as empty
+          setLoading(false);
+        }
+      } catch (err) {
+        console.error("Error fetching quiz data:", err);
+        setError("Failed to load quiz data. Please try again later.");
+        setLoading(false);
+      }
+    };
+
+    loadQuizData();
+  }, [data]);
 
   const handleAnswer = (answer) => {
-    const updatedAnswers = [...userAnswers]
-    updatedAnswers[currentQuestion] = answer
-    setUserAnswers(updatedAnswers)
-  }
+    const updatedAnswers = [...userAnswers];
+    updatedAnswers[currentQuestion] = answer;
+    setUserAnswers(updatedAnswers);
+  };
 
   const handleNext = () => {
     if (currentQuestion < quizData.length - 1) {
-      setCurrentQuestion((prev) => prev + 1)
+      setCurrentQuestion((prev) => prev + 1);
     }
-  }
+  };
 
   const handlePrevious = () => {
     if (currentQuestion > 0) {
-      setCurrentQuestion((prev) => prev - 1)
+      setCurrentQuestion((prev) => prev - 1);
     }
-  }
+  };
 
   const handleSubmit = () => {
     const newScore = quizData.reduce((acc, question, index) => {
       if (question.type === "MCQ") {
-        const correctAnswer = question.options.find((option) => option.isCorrectAnswer)?.text
-        return userAnswers[index] === correctAnswer ? acc + 1 : acc
+        const correctAnswer = question.options.find((option) => option.isCorrectAnswer)?.text;
+        return userAnswers[index] === correctAnswer ? acc + 1 : acc;
       } else {
-        return userAnswers[index] === question.solution ? acc + 1 : acc
+        return userAnswers[index] === question.solution ? acc + 1 : acc;
       }
-    }, 0)
-    setScore(newScore)
-    setShowResults(true)
+    }, 0);
+    setScore(newScore);
+    setShowResults(true);
+  };
+
+  if (loading) {
+    return <div className="flex justify-center items-center h-screen">Loading...</div>;
+  }
+
+  if (error) {
+    return <div className="flex justify-center items-center h-screen text-red-500">{error}</div>;
   }
 
   if (showResults) {
     return (
-      <Card className="w-full max-w-2xl mx-auto">
+      <Card className="w-full max-w-2xl mx-auto mt-10 shadow-lg">
         <CardHeader>
-          <CardTitle className="text-3xl font-bold text-primary">Quiz Results</CardTitle>
+          <CardTitle className="text-3xl font-bold text-primary text-center">Quiz Results</CardTitle>
         </CardHeader>
         <CardContent>
           <p className="text-4xl font-bold text-center text-secondary">
@@ -64,15 +90,15 @@ const McqQuiz = ({ data }) => {
           </div>
         </CardContent>
       </Card>
-    )
+    );
   }
 
-  const currentQuestionData = quizData[currentQuestion]
+  const currentQuestionData = quizData[currentQuestion];
 
   return (
-    <Card className="w-full max-w-2xl mx-auto">
+    <Card className="w-full max-w-2xl mx-auto mt-10 shadow-lg">
       <CardHeader>
-        <CardTitle className="text-2xl font-bold text-primary">
+        <CardTitle className="text-2xl font-bold text-primary text-center">
           Question {currentQuestion + 1} of {quizData.length}
         </CardTitle>
         <div className="h-2 bg-secondary rounded-full mt-4">
@@ -110,8 +136,7 @@ const McqQuiz = ({ data }) => {
         )}
       </CardFooter>
     </Card>
-  )
-}
+  );
+};
 
-export default McqQuiz
-
+export default McqQuiz;
