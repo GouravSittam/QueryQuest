@@ -16,7 +16,7 @@ const SearchBar = () => {
 
     setLoading(true);
     try {
-      const response = await axios.get(`http://localhost:5000/search?q=${query}`);
+      const response = await axios.get(`https://queryquest-mern.vercel.app/search?q=${query}`);
       setResults(response.data);
     } catch (error) {
       console.error('Error fetching search results:', error);

@@ -10,7 +10,7 @@ const useFetchQuestion = (category) => {
             console.log(category);
           if (category) {
             console.log(category)
-            const response = await axios.get(`http://localhost:5000/${category}`);
+            const response = await axios.get(`https://queryquest-mern.vercel.app/${category}`);
             console.log(response.data)
             setQuestions(response.data);
           } 
