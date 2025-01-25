@@ -12,7 +12,7 @@ const shuffleArray = (array) => {
   return shuffled
 }
 
-function Question({ question, onAnswer, userAnswer }) {
+function WordQuestion({ question, onAnswer, userAnswer }) {
   const [blocks, setBlocks] = useState([])
 
   useEffect(() => {
@@ -79,7 +79,7 @@ function Question({ question, onAnswer, userAnswer }) {
   )
 }
 
-export default Question
+export default WordQuestion
 
 
 

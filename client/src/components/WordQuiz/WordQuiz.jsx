@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
-import Question from "./Question"; // Correct import path
+import Question from "./WordQuestion"; // Correct import path
 import useFetchQuestion from "@/lib/useFetchQuestion";
 
 const WordQuiz = ({ category }) => {
