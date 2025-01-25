@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
-import Question from "./Question"
+import Question from "./Question.jsx"
 import { ArrowLeft, ArrowRight } from "lucide-react"
 import Api from "@/lib/Api"
 import useFetchQuestion from "@/lib/useFetchQuestion"
