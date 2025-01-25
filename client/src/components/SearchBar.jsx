@@ -43,8 +43,30 @@ const SearchBar = () => {
         </div>
       </Card>
 
+      {/* Loading Shimmer */}
+      {loading && (
+        <motion.div
+          className="space-y-4"
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.3 }}
+        >
+          {[...Array(3)].map((_, index) => (
+            <Card
+              key={index}
+              className="p-4 hover:shadow-lg border border-gray-100 transition-shadow animate-pulse"
+            >
+              <CardContent>
+                <div className="h-4 bg-gray-300 rounded w-3/4 mb-2"></div>
+                <div className="h-4 bg-gray-300 rounded w-1/2"></div>
+              </CardContent>
+            </Card>
+          ))}
+        </motion.div>
+      )}
+
       {/* Results */}
-      {results.length > 0 && (
+      {!loading && results.length > 0 && (
         <motion.div
           className="space-y-4"
           initial={{ opacity: 0, y: 20 }}
@@ -66,9 +88,9 @@ const SearchBar = () => {
       )}
 
       {/* No Results */}
-      {!loading && results.length === 0 && query && (
+      {/* {!loading && results.length === 0 && query && (
         <p className="text-center text-gray-500 mt-4">No results found for "{query}"</p>
-      )}
+      )} */}
     </div>
   );
 };
