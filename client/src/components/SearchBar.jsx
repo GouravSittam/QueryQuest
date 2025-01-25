@@ -25,6 +25,12 @@ const SearchBar = () => {
     }
   };
 
+  const handleKeyDown = (e) => {
+    if (e.key === 'Enter') {
+      handleSearch();
+    }
+  };
+
   return (
     <div className="w-full max-w-2xl mx-auto mt-10 p-4 space-y-6">
       {/* Search Bar */}
@@ -35,6 +41,7 @@ const SearchBar = () => {
             placeholder="Search questions..."
             value={query}
             onChange={(e) => setQuery(e.target.value)}
+            onKeyDown={handleKeyDown}
             className="flex-1"
           />
           <Button onClick={handleSearch} disabled={loading}>

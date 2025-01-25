@@ -14,19 +14,7 @@ export default function QuestionSearch() {
     setSelectedCategory(category);
   };
 
- // Check localStorage for the selected category or default to "word"
-//  const [selectedCategory, setSelectedCategory] = useState(
-//     () => localStorage.getItem("selectedCategory") || "word" // Initialize from localStorage
-//   );
 
-//   useEffect(() => {
-//     // Save the selected category to localStorage whenever it changes
-//     localStorage.setItem("selectedCategory", selectedCategory);
-//   }, [selectedCategory]);
-
-//   const handleCategoryClick = (category) => {
-//     setSelectedCategory(category);
-//   };
 
   return (
     <Card className="w-full max-w-2xl mx-auto">
