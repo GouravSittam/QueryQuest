@@ -1,64 +1,61 @@
-import React, { useState, useEffect } from "react"
-import { Button } from "@/components/ui/button"
-import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
-import Question from "./Question.jsx"
-import { ArrowLeft, ArrowRight } from "lucide-react"
-import Api from "@/lib/Api"
-import useFetchQuestion from "@/lib/useFetchQuestion"
+import React, { useState, useEffect } from "react";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
+import Question from "./Question"; // Correct import path
+import useFetchQuestion from "@/lib/useFetchQuestion";
 
-const Quiz=({category})=> {
-  const [quizData, setQuizData] = useState([])
-  const [currentQuestion, setCurrentQuestion] = useState(0)
-  const [userAnswers, setUserAnswers] = useState([])
-  const [showResults, setShowResults] = useState(false)
-  const [score, setScore] = useState(0)
-  const [loading, setLoading] = useState(true)
-  const [error, setError] = useState(null)
-  console.log("hello inside word")
+const WordQuiz = ({ category }) => {
+  const [quizData, setQuizData] = useState([]);
+  const [currentQuestion, setCurrentQuestion] = useState(0);
+  const [userAnswers, setUserAnswers] = useState([]);
+  const [showResults, setShowResults] = useState(false);
+  const [score, setScore] = useState(0);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+  console.log("hello inside word");
   const data = useFetchQuestion(category);
 
   useEffect(() => {
     if (data && data.length > 0) {
       console.log(data);
       setQuizData(data);
-      setUserAnswers(new Array(data.length).fill("")); 
+      setUserAnswers(new Array(data.length).fill(""));
       setLoading(false);
     }
   }, [data]);
 
   const handleAnswer = (answer) => {
-    const updatedAnswers = [...userAnswers]
-    updatedAnswers[currentQuestion] = answer
-    setUserAnswers(updatedAnswers)
-  }
+    const updatedAnswers = [...userAnswers];
+    updatedAnswers[currentQuestion] = answer;
+    setUserAnswers(updatedAnswers);
+  };
 
   const handleNext = () => {
     if (currentQuestion < quizData.length - 1) {
-      setCurrentQuestion((prev) => prev + 1)
+      setCurrentQuestion((prev) => prev + 1);
     }
-  }
+  };
 
   const handlePrevious = () => {
     if (currentQuestion > 0) {
-      setCurrentQuestion((prev) => prev - 1)
+      setCurrentQuestion((prev) => prev - 1);
     }
-  }
+  };
 
   const handleSubmit = () => {
-    const newScore = quizData.reduce(
-      (acc, question, index) => (userAnswers[index] === question.solution ? acc + 1 : acc),
-      0,
-    )
-    setScore(newScore)
-    setShowResults(true)
-  }
+    const newScore = quizData.reduce((acc, question, index) => {
+      return userAnswers[index] === question.solution ? acc + 1 : acc;
+    }, 0);
+    setScore(newScore);
+    setShowResults(true);
+  };
 
   if (loading) {
-    return <div className="flex justify-center items-center h-screen">Loading...</div>
+    return <div className="flex justify-center items-center h-screen">Loading...</div>;
   }
 
   if (error) {
-    return <div className="flex justify-center items-center h-screen text-red-500">{error}</div>
+    return <div className="flex justify-center items-center h-screen text-red-500">{error}</div>;
   }
 
   if (showResults) {
@@ -78,8 +75,10 @@ const Quiz=({category})=> {
           </div>
         </CardContent>
       </Card>
-    )
+    );
   }
+
+  const currentQuestionData = quizData[currentQuestion];
 
   return (
     <Card className="w-full max-w-2xl mx-auto">
@@ -87,39 +86,26 @@ const Quiz=({category})=> {
         <CardTitle className="text-2xl font-bold text-primary">
           Question {currentQuestion + 1} of {quizData.length}
         </CardTitle>
-        <div className="h-2 bg-secondary rounded-full mt-4">
-          <div
-            className="h-full bg-primary rounded-full transition-all duration-300 ease-in-out"
-            style={{
-              width: `${((currentQuestion + 1) / quizData.length) * 100}%`,
-            }}
-          ></div>
-        </div>
       </CardHeader>
       <CardContent>
         <Question
-          question={quizData[currentQuestion]}
-          userAnswer={userAnswers[currentQuestion]}
+          question={currentQuestionData}
           onAnswer={handleAnswer}
+          userAnswer={userAnswers[currentQuestion]}
         />
       </CardContent>
       <CardFooter className="flex justify-between">
-        <Button onClick={handlePrevious} disabled={currentQuestion === 0} className="flex items-center">
-          <ArrowLeft className="mr-2" /> Previous
+        <Button onClick={handlePrevious} disabled={currentQuestion === 0}>
+          Previous
         </Button>
         {currentQuestion === quizData.length - 1 ? (
-          <Button onClick={handleSubmit} className="bg-green-600 hover:bg-green-700">
-            Submit Quiz
-          </Button>
+          <Button onClick={handleSubmit}>Submit</Button>
         ) : (
-          <Button onClick={handleNext} className="flex items-center">
-            Next <ArrowRight className="ml-2" />
-          </Button>
+          <Button onClick={handleNext}>Next</Button>
         )}
       </CardFooter>
     </Card>
-  )
-}
+  );
+};
 
-export default Quiz
-
+export default WordQuiz;
