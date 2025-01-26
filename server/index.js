@@ -40,7 +40,12 @@ app.get('/all', async (req, res) => {
 
 app.get('/word', async (req, res) => {
     try {
-        const tests = await db.collection('Data').find({ anagramType: "WORD" }).limit(10).toArray();
+        const tests = await db.collection('Data')
+            .aggregate([
+                { $match: { anagramType: "WORD" } }, // Filter for "WORD" type
+                { $sample: { size: 10 } } // Fetch 10 random documents
+            ])
+            .toArray();
         res.status(200).json(tests);
     } catch (error) {
         res.status(404).json({ message: error.message });
@@ -49,7 +54,12 @@ app.get('/word', async (req, res) => {
 
 app.get('/sentence', async (req, res) => {
     try {
-        const tests = await db.collection('Data').find({ anagramType: "SENTENCE" }).limit(10).toArray();
+        const tests = await db.collection('Data')
+            .aggregate([
+                { $match: { anagramType: "SENTENCE" } }, // Filter for "SENTENCE" type
+                { $sample: { size: 10 } } // Fetch 10 random documents
+            ])
+            .toArray();
         res.status(200).json(tests);
     } catch (error) {
         res.status(404).json({ message: error.message });
@@ -58,7 +68,12 @@ app.get('/sentence', async (req, res) => {
 
 app.get('/mcq', async (req, res) => {
     try {
-        const tests = await db.collection('Data').find({ type: "MCQ" }).limit(10).toArray();
+        const tests = await db.collection('Data')
+            .aggregate([
+                { $match: { type: "MCQ" } }, // Filter for "MCQ" type
+                { $sample: { size: 10 } } // Fetch 10 random documents
+            ])
+            .toArray();
         res.status(200).json(tests);
     } catch (error) {
         res.status(404).json({ message: error.message });
@@ -67,7 +82,12 @@ app.get('/mcq', async (req, res) => {
 
 app.get('/read', async (req, res) => {
     try {
-        const tests = await db.collection('Data').find({ type: "READ_ALONG" }).limit(10).toArray();
+        const tests = await db.collection('Data')
+            .aggregate([
+                { $match: { type: "READ_ALONG" } }, // Filter for "READ_ALONG" type
+                { $sample: { size: 10 } } // Fetch 10 random documents
+            ])
+            .toArray();
         res.status(200).json(tests);
     } catch (error) {
         res.status(404).json({ message: error.message });
@@ -81,15 +101,19 @@ app.get('/search', async (req, res) => {
             return res.status(400).json({ message: "Query parameter 'q' is required" });
         }
 
-        const tests = await db.collection('Data').find({
-            $or: [
-                { title: { $regex: query, $options: 'i' } },
-                { description: { $regex: query, $options: 'i' } }
-            ]
-        }).limit(10).toArray();
-
-        console.log(tests);
-
+        const tests = await db.collection('Data')
+            .aggregate([
+                {
+                    $match: {
+                        $or: [
+                            { title: { $regex: query, $options: 'i' } },
+                            { description: { $regex: query, $options: 'i' } }
+                        ]
+                    }
+                },
+                { $sample: { size: 10 } } // Fetch 10 random documents
+            ])
+            .toArray();
 
         res.status(200).json(tests);
     } catch (error) {
