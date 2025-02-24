@@ -43,4 +43,3 @@ To get started with QueryQuest, follow these steps:
 3. Update the license and acknowledgments sections as needed.
 
 Let me know if you need further adjustments!
-
